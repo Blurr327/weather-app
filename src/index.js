@@ -1,3 +1,6 @@
+import {generate_about} from "./pages/about.js";
+import {generate_contact} from "./pages/contact.js";
+
 const contentDiv = document.querySelector("#content");
 const links = document.querySelector(".links")
 
@@ -5,27 +8,19 @@ let cur_page_id = "weather";
 const PAGES = new Map();
 
 PAGES.set("weather",
-    () => {
-        const weatherDiv = document.createElement("div");
+    (doc) => {
+        const weatherDiv = doc.createElement("div");
         weatherDiv.textContent = "This is the weather";
         return weatherDiv;
     }
 )
 
 PAGES.set("about",
-    () => {
-        const aboutDiv = document.createElement("div");
-        aboutDiv.textContent = "About";
-        return aboutDiv;
-    }
+    generate_about
 )
 
 PAGES.set("contact",
-    () => {
-        const contactDiv = document.createElement("contact");
-        contactDiv.textContent = "Contact";
-        return contactDiv;
-    }
+    generate_contact
 )
 
 function setCurPage(pageId) {
@@ -35,7 +30,7 @@ function setCurPage(pageId) {
 }
 
 function buildNav() {
-    for(let [key, value] of PAGES) {
+    for(let key of PAGES.keys()) {
         const button = document.createElement("button");
         button.textContent = key;
         button.onclick = () => setCurPage(key);
@@ -47,7 +42,7 @@ window.onload = () => {
     buildNav();
     document.addEventListener("page-change", (e) => {
         contentDiv.textContent = "";
-        contentDiv.appendChild(PAGES.get(cur_page_id)());
+        contentDiv.appendChild(PAGES.get(cur_page_id)(document));
     });
     setCurPage("about");
 };
